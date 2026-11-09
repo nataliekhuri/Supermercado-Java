@@ -1,6 +1,6 @@
 # Supermercado — Multi-Process Java Console System
 
-> 🚧 **Work in Progress** — This project is currently under development. The features described below are **planned** and are being implemented step by step.
+> 🚧 **Work in Progress** — All four applications are implemented and tested with automated console tests. The final manual test in a real Windows console is pending.
 
 A console-based supermarket management system made of **four independent Java applications**. A main application launches the others as real operating-system processes, and they share data stored in two XML files.
 
@@ -70,32 +70,52 @@ No external libraries and no Maven: only the standard Java library.
 
 ## Main Features
 
-> Planned features. Each item will be checked once it is implemented and tested.
-
 ### Supermercado (main application)
-- [ ] Main menu that stays active until the user chooses to exit
-- [ ] Launch `Clientes.jar`, `Compras.jar` and `Facturacion.jar` with `ProcessBuilder`
-- [ ] Interactive console for child processes (`inheritIO()`)
-- [ ] Wait for each process (`waitFor()`) and check its exit code
-- [ ] Error handling when a JAR cannot be found or started
-- [ ] Java executable resolved from `java.home` (no dependency on the system `PATH`)
+- [x] Main menu that stays active until the user chooses to exit
+- [x] Launch `Clientes.jar`, `Compras.jar` and `Facturacion.jar` with `ProcessBuilder`
+- [x] Interactive console for child processes (`inheritIO()`)
+- [x] Wait for each process (`waitFor()`) and check its exit code
+- [x] Error handling when a JAR cannot be found or started
+- [x] Java executable resolved from `java.home` (no dependency on the system `PATH`)
 
 ### Clientes
-- [ ] Register customers with an automatically generated unique ID
-- [ ] Delete a customer (with confirmation) together with their pending purchase
-- [ ] List registered customers
+- [x] Register customers with an automatically generated unique ID (deleted IDs are never reused)
+- [x] Delete a customer (with confirmation) together with their pending purchase
+- [x] List registered customers
 
 ### Compras
-- [ ] Select an existing customer and load their pending products
-- [ ] Add, view, modify and delete products
-- [ ] Price validation (greater than zero, maximum two decimals) and positive integer quantities
-- [ ] Save the purchase without affecting other customers' data
-- [ ] Warning about unsaved changes (save / discard / cancel)
+- [x] Select an existing customer and load their pending products
+- [x] Add, view, modify and delete products
+- [x] Price validation (greater than zero, maximum two decimals, comma or dot) and positive integer quantities
+- [x] Save the purchase without duplicates and without affecting other customers' data
+- [x] Warning about unsaved changes (save / discard / cancel)
 
 ### Facturacion
-- [ ] Select a customer and view their pending purchase
-- [ ] Calculate line amounts, subtotal, 10 % discount (subtotal ≥ 50 €) and final total
-- [ ] Confirm the invoice and remove the pending purchase from `compras.xml`
+- [x] Select a customer and view their pending purchase
+- [x] Calculate line amounts, subtotal, 10 % discount (subtotal ≥ 50 €) and final total with `BigDecimal`
+- [x] Confirm the invoice and remove only that customer's pending purchase from `compras.xml`
+
+### Example: Invoice
+
+Output of the Facturacion application, identical to the example in the assignment:
+
+```
+========== FACTURA ==========
+
+Cliente: Juan
+ID cliente: 1
+
+Producto       Cant.   Precio   Importe
+
+Arroz            2     3,50 €     7,00 €
+Aceite           3    15,00 €    45,00 €
+
+---------------------------------------
+Subtotal:                      52,00 €
+Descuento (10 %):               5,20 €
+TOTAL A PAGAR:                 46,80 €
+---------------------------------------
+```
 
 ---
 
@@ -131,7 +151,7 @@ All applications use the same common `datos` folder. Supermercado controls the p
 3. The child process uses the same console, so the user interacts with it directly.
 4. Supermercado waits until the child process ends, checks its exit code and shows the main menu again.
 
-**Planned folder structure**
+**Folder structure**
 
 ```
 Supermercado-Java/
@@ -186,12 +206,13 @@ All applications share two XML files located in the common `datos` folder. They 
 - Prices are stored with a dot as decimal separator.
 - Product IDs are unique within each customer's purchase.
 - All applications find the same `datos` folder regardless of the directory they are run from.
+- Files are saved safely: first to a temporary `.tmp` file, which then replaces the original, so an XML file is never left half-written.
+- A malformed XML file is reported to the user and never overwritten.
+- `clientes.xml` may store an optional `ultimoId` attribute on its root element (`<clientes ultimoId="3">`), so deleted customer IDs are never reused.
 
 ---
 
 ## Installation and Execution
-
-> ⚠️ These instructions are planned and **not yet verified**. They will be tested and completed when the JAR files are working.
 
 **Requirements**
 
@@ -204,23 +225,24 @@ git clone https://github.com/nataliekhuri/Supermercado-Java.git
 cd Supermercado-Java
 ```
 
-**Run (planned)**
+**Run**
 
 ```bash
 java -jar Supermercado/Supermercado.jar
 ```
 
 If `java` is not available in the system `PATH`, use the full path to the Java executable.
+Running from a terminal (CMD) is recommended: the NetBeans Output window does not always forward keyboard input to the child processes.
 
-**Build from source (planned)**
+**Build from source**
 
-Open each project in Apache NetBeans and run **Clean and Build**. The JAR file will be copied into its application folder.
+Open each project in Apache NetBeans and run **Clean and Build**. The JAR file is copied automatically into its application folder.
 
 ---
 
 ## Screenshots
 
-*Screenshots will be added once the applications are implemented.*
+*Screenshots will be added soon.*
 
 ---
 
@@ -228,13 +250,13 @@ Open each project in Apache NetBeans and run **Clean and Build**. The JAR file w
 
 | Phase | Description | Status |
 |-------|-------------|--------|
-| 0 | Repository setup (`.gitignore`, `datos`, README) | 🔄 In progress |
-| 1 | NetBeans projects and process control (`ProcessBuilder`) | ⏳ Pending |
-| 2 | Clientes application | ⏳ Pending |
-| 3–4 | Compras application | ⏳ Pending |
-| 5 | Facturacion application | ⏳ Pending |
-| 6 | Full testing | ⏳ Pending |
-| 7 | Final delivery and documentation | ⏳ Pending |
+| 0 | Repository setup (`.gitignore`, `datos`, README) | ✅ Completed |
+| 1 | NetBeans projects and process control (`ProcessBuilder`) | ✅ Completed |
+| 2 | Clientes application | ✅ Completed |
+| 3–4 | Compras application | ✅ Completed |
+| 5 | Facturacion application | ✅ Completed |
+| 6 | Full testing | 🔄 In progress — final manual test in CMD pending |
+| 7 | Final delivery and documentation | 🔄 In progress |
 
 ---
 
