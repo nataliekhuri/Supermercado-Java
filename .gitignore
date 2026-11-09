@@ -1,0 +1,30 @@
+# ==========================================
+#  Proyecto Supermercado - .gitignore
+# ==========================================
+
+# ----- NetBeans (Java with Ant) -----
+# Carpetas generadas al compilar. Se vuelven a crear con "Clean and Build".
+build/
+dist/
+
+# Configuración privada de NetBeans (rutas y preferencias de este ordenador).
+**/nbproject/private/
+
+# ----- Java -----
+# Archivos compilados.
+*.class
+
+# Informes de error de la máquina virtual de Java.
+hs_err_pid*.log
+
+# ----- Archivos temporales del proyecto -----
+# Copias de seguridad y archivos temporales creados al modificar los XML.
+*.bak
+*.tmp
+
+# ----- Windows -----
+Thumbs.db
+desktop.ini
+
+# IMPORTANTE: no se ignoran los archivos .jar ni los .xml,
+# porque forman parte de la entrega del proyecto.
